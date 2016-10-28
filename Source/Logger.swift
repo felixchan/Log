@@ -45,7 +45,8 @@ public func <(x: Level, y: Level) -> Bool {
 public class Logger {
     /// The logger state.
     public var enabled: Bool = true
-    
+    /// **Slow!** Uses synchronous NSLog instead of Swift.print to ensure all messages is written before exception occurs.
+    public var realtime: Bool = false
     /// The logger formatter.
     public var formatter: Formatter {
         didSet { formatter.logger = self }
@@ -191,8 +192,13 @@ public class Logger {
             date: date
         )
         
-        dispatch_async(queue) {
-            Swift.print(result, separator: "", terminator: "")
+        if realtime {
+            NSLog(result)
+        }
+        else {
+            dispatch_async(queue) {
+                Swift.print(result, separator: "", terminator: "")
+            }
         }
     }
     
