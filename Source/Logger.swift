@@ -193,7 +193,7 @@ public class Logger {
         )
         
         if realtime {
-            NSLog(result)
+            NSLog(result.stringByReplacingOccurrencesOfString("%", withString: "%%"))
         }
         else {
             dispatch_async(queue) {
