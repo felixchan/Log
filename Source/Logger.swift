@@ -46,6 +46,9 @@ open class Logger {
     /// The logger state.
     public var enabled: Bool = true
     
+    /// **Slow!** Uses synchronous NSLog instead of Swift.print to ensure all messages is written before exception occurs.
+    public var realtime: Bool = false
+    
     /// The logger formatter.
     public var formatter: Formatter {
         didSet { formatter.logger = self }
@@ -191,8 +194,13 @@ open class Logger {
             date: date
         )
         
-        queue.async {
-            Swift.print(result, separator: "", terminator: "")
+        if realtime {
+            NSLog(result.replacingOccurrences(of: "%", with: "%%"))
+        }
+        else {
+            queue.async {
+                Swift.print(result, separator: "", terminator: "")
+            }
         }
     }
     
