@@ -46,6 +46,8 @@ open class Logger {
     /// The logger state.
     public var enabled: Bool = true
     
+    public var name: String? = nil      // an optional logger name to prepend loglevel (useful for log filtering)
+    
     /// The logger formatter.
     public var formatter: Formatter {
         didSet { formatter.logger = self }
@@ -188,7 +190,8 @@ open class Logger {
             line: line,
             column: column,
             function: function,
-            date: date
+            date: date,
+            name: name
         )
         
         queue.async {
