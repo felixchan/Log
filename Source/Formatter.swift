@@ -96,7 +96,7 @@ public class Formatter: Formatters {
      
      - returns: A formatted string.
      */
-    internal func format(level: Level, items: [Any], separator: String, terminator: String, file: String, line: Int, column: Int, function: String, date: Date) -> String {
+    internal func format(level: Level, items: [Any], separator: String, terminator: String, file: String, line: Int, column: Int, function: String, date: Date, name: String?) -> String {
         let arguments = components.map { (component: Component) -> CVarArg in
             switch component {
             case .date(let dateFormat):
@@ -110,7 +110,7 @@ public class Formatter: Formatters {
             case .column:
                 return String(column)
             case .level:
-                return format(level: level)
+                return format(level: level, loggerName: name)
             case .message:
                 return items.map({ String(describing: $0) }).joined(separator: separator)
             case .location:
@@ -220,9 +220,12 @@ private extension Formatter {
      
      - returns: A formatted Level component.
      */
-    func format(level: Level) -> String {
-        let text = level.description
+    func format(level: Level, loggerName: String?) -> String {
+        var text = level.description
         
+        if let name = loggerName {
+            text = "\(name)/\(text)"
+        }
         if let color = logger.theme?.colors[level] {
             return text.withColor(color)
         }
